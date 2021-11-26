@@ -1,6 +1,6 @@
 from app import app, db, socketio
 from time import time
-from flask import render_template, redirect, url_for, session, request, json, jsonify
+from flask import render_template, redirect, url_for, session, request, json, jsonify, flash
 import requests
 import os
 from ast import literal_eval # 보안 상의 이유로 eval 대신 더 안전한 literal_eval 사용
@@ -179,8 +179,16 @@ def chatting() :
     login = False
     if 'login' in session :
         login = True
-    messages = History2.query.all()
+        user_id = session['login']
+        messages = History2.query.all()
     return render_template('chat.html', login=login, message=messages)
+
+@app.route('/chat/<user_id>')
+def datatable_data(user_id) :
+    if 'login' in session :
+        return render_template('chat.html', user_id=user_id)
+    else :
+        return render_template('signin.html', login=login)
 
 
 @socketio.on('my event')
@@ -195,6 +203,12 @@ def handle_my_custom_event(msg, methods=['GET', 'POST']):
 @socketio.on('connect_inter')
 def handle_my_custom_event2(msg, methods=['GET', 'POST']):
     socketio.emit('my response', msg)
+
+
+
+
+
+
 
 
 
