@@ -42,3 +42,4 @@ class History2(db.Model):
     name = db.Column('name', db.String, nullable=True, default="System")
     message = db.Column('message', db.String)
     #timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
