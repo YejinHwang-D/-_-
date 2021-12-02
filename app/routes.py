@@ -47,6 +47,7 @@ def singin() :
 
     elif request.method == 'POST' :
         values = request.get_json(force=True)
+        print(values)
         id = values['id']
         password = values['password']
 
@@ -61,12 +62,12 @@ def singin() :
             return 'FAIL'
 
 @app.route('/signup', methods=['GET', 'POST'])
-def singup() :
+def signup() :
     if request.method == 'GET':
         login = False
         if 'login' in session :
             login = True
-        return render_template('signup.html', login=login)
+        return render_template('signup.h tml', login=login)
 
     elif request.method == 'POST' :
         values = request.get_json(force=True)
@@ -74,17 +75,17 @@ def singup() :
         id = values['id']
         password = values['password']
 
-        print(f'name: {name}, id: {id}, password: {password}')
+        #print(f'name: {name}, id: {id}, password: {password}')
         record = User(name=name, id=id, password=password)
-        db.session.add(record)
+        db.session.add (record)
         db.session.commit()
         return 'OK'
 
 @app.route('/signout', methods=['DELETE'])
 def signout() :
-    session.clear()
+    session.clear() 
 
-    if 'connection' in session :
+    if 'connection' in session :  
         conn_id = session['connection']['conn_id']
         with requests.delete(f'http://0.0.0.0:8021/connections/{conn_id}') as del_res :
             print(del_res.json())
@@ -174,25 +175,18 @@ def credential_cred_ex_id(cred_ex_id) :
         credential_body = json.dumps(credential_body, indent=4) # dict -> JSON 문자열
     return render_template('credential_issued.html', login=login, cred_ex_id=cred_ex_id, credential_body=credential_body)
 
+
 @app.route('/chat')
 def chatting() :
     login = False
     if 'login' in session :
         login = True
-        user_id = session['login']
-        messages = History2.query.all()
+    messages = History2.query.all()
     return render_template('chat.html', login=login, message=messages)
-
-@app.route('/chat/<user_id>')
-def datatable_data(user_id) :
-    if 'login' in session :
-        return render_template('chat.html', user_id=user_id)
-    else :
-        return render_template('signin.html', login=login)
-
 
 @socketio.on('my event')
 def handle_my_custom_event(msg, methods=['GET', 'POST']):
+    print(msg)
     name = msg.get('name')
     message = msg.get('message')
     insertMessage = History2(name=name, message=message)
@@ -302,7 +296,7 @@ def credential_download() :
     return render_template('credential_download.html', login=login, cred_ex_id=cred_ex_id, data=data)
 
 @app.route('/datatable-data/<cred_ex_id>')
-def datatable_data(cred_ex_id) :
+def datatable_data2(cred_ex_id) :
     if 'login' in session :
         datatable_file = os.path.join(path, 'datatable_file', f'{cred_ex_id}.json') # 경로 병합해 새 경로 생성
         with open(datatable_file, 'r') as f :
