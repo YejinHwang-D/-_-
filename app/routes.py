@@ -67,7 +67,7 @@ def signup() :
         login = False
         if 'login' in session :
             login = True
-        return render_template('signup.h tml', login=login)
+        return render_template('signup.html', login=login)
 
     elif request.method == 'POST' :
         values = request.get_json(force=True)
